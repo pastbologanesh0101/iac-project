@@ -1,0 +1,15 @@
+---
+# Main entry point playbook for the Infrastructure as Code Project.
+#
+# Applies all roles to the `local` inventory group. Every role is sandboxed
+# to a project-local ./sandbox directory (see README.md for why), so this
+# playbook is safe to run repeatedly on any machine with Python + Ansible
+# installed -- it never touches real system files, services, or users.
+- name: Provision sandboxed "web app deployment" environment
+  hosts: local
+  gather_facts: true
+
+  roles:
+    - webapp_deploy
+    - user_provision
+    - idempotent_baseline

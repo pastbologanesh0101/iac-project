@@ -1,0 +1,9 @@
+---
+# Defaults for the webapp_deploy role. Values here are overridden by
+# group_vars/local.yml and host_vars/localhost.yml when present.
+webapp_name: "demoapp"
+webapp_port: 8080
+webapp_domain: "demoapp.local"
+webapp_worker_processes: 2
+webapp_version: "0.0.0"
+sandbox_root: "{{ playbook_dir }}/sandbox"

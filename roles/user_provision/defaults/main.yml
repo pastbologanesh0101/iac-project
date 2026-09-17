@@ -1,0 +1,5 @@
+---
+# Defaults for the user_provision role.
+sandbox_root: "{{ playbook_dir }}/sandbox"
+managed_users: []
+users_db_file: "{{ sandbox_root }}/var/lib/iac/users.json"

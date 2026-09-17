@@ -1,0 +1,15 @@
+## Managed by Ansible role: webapp_deploy -- DO NOT EDIT BY HAND
+## Rendered for host: {{ inventory_hostname }}
+server {
+    listen {{ webapp_port }};
+    server_name {{ webapp_domain }};
+
+    location / {
+        proxy_pass http://127.0.0.1:{{ webapp_port }};
+        proxy_set_header Host $host;
+    }
+
+    # app metadata
+    # version: {{ webapp_version }}
+    # workers: {{ webapp_worker_processes }}
+}

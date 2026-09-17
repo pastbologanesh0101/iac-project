@@ -1,0 +1,23 @@
+---
+# Group-level variables applied to every host in the [local] group.
+sandbox_root: "{{ playbook_dir }}/sandbox"
+
+webapp_name: "demoapp"
+webapp_port: 8080
+webapp_domain: "demoapp.local"
+webapp_worker_processes: 2
+webapp_version: "1.4.0"
+
+managed_users:
+  - name: alice
+    uid: 2001
+    role: admin
+    shell: /bin/bash
+  - name: bob
+    uid: 2002
+    role: developer
+    shell: /bin/bash
+  - name: carol
+    uid: 2003
+    role: readonly
+    shell: /usr/sbin/nologin

@@ -1,0 +1,15 @@
+## Managed by Ansible role: webapp_deploy -- DO NOT EDIT BY HAND
+## Rendered for host: {{ inventory_hostname }}
+[Unit]
+Description={{ webapp_name }} application service (v{{ webapp_version }})
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/env {{ webapp_name }}-server --port {{ webapp_port }} --workers {{ webapp_worker_processes }}
+Restart=on-failure
+Environment=WEBAPP_DOMAIN={{ webapp_domain }}
+Environment=WEBAPP_VERSION={{ webapp_version }}
+
+[Install]
+WantedBy=multi-user.target

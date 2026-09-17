@@ -1,0 +1,5 @@
+---
+# Host-specific overrides for localhost. Kept intentionally small: this file
+# demonstrates the group_vars/host_vars precedence layer that real Ansible
+# projects rely on for multi-environment configuration.
+webapp_worker_processes: 4

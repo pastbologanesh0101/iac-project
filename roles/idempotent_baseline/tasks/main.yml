@@ -1,0 +1,35 @@
+---
+# idempotent_baseline: demonstrates classic Ansible idempotency patterns --
+# a `creates:` guarded command that should only ever run once, and a
+# `state: present` managed file whose content never changes across runs.
+# Together with webapp_deploy and user_provision (both of which are also
+# naturally idempotent via template/copy content-hashing), a second full
+# playbook run should report changed=0 across every task.
+
+- name: Ensure log directory exists
+  ansible.builtin.file:
+    path: "{{ baseline_log_file | dirname }}"
+    state: directory
+    mode: "0755"
+
+- name: Run one-time baseline initialization command (guarded by creates:)
+  ansible.builtin.command:
+    cmd: >-
+      /bin/sh -c "echo 'baseline initialized' > {{ baseline_log_file }}"
+    creates: "{{ baseline_marker_file }}"
+  register: baseline_init
+
+- name: Touch the baseline marker file so future runs skip initialization
+  ansible.builtin.file:
+    path: "{{ baseline_marker_file }}"
+    state: touch
+    mode: "0644"
+  when: baseline_init.changed
+
+- name: "Ensure a stable, idempotent baseline README exists (state: present)"
+  ansible.builtin.copy:
+    content: |
+      This directory is managed entirely by Ansible.
+      Do not edit files under sandbox/ by hand -- re-run the playbook instead.
+    dest: "{{ sandbox_root }}/README_SANDBOX.txt"
+    mode: "0644"

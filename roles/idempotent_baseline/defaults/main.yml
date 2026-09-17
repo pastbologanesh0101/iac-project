@@ -1,0 +1,5 @@
+---
+# Defaults for the idempotent_baseline role.
+sandbox_root: "{{ playbook_dir }}/sandbox"
+baseline_marker_file: "{{ sandbox_root }}/var/lib/iac/.baseline_initialized"
+baseline_log_file: "{{ sandbox_root }}/var/log/iac/provision.log"

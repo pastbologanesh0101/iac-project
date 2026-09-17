@@ -1,0 +1,24 @@
+---
+# user_provision: simulates provisioning system users by managing "user
+# records" as entries in a local JSON file, instead of touching real system
+# accounts (no `user:` module, no /etc/passwd). This keeps the role fully
+# safe to run on a laptop or in CI with no privilege escalation.
+
+- name: Ensure sandbox data directory exists
+  ansible.builtin.file:
+    path: "{{ users_db_file | dirname }}"
+    state: directory
+    mode: "0755"
+
+- name: "Write user records to the local JSON database (state: present)"
+  ansible.builtin.copy:
+    content: "{{ managed_users | to_nice_json }}\n"
+    dest: "{{ users_db_file }}"
+    mode: "0644"
+  register: users_db_write
+
+- name: Report user provisioning summary
+  ansible.builtin.debug:
+    msg: >-
+      Managed {{ managed_users | length }} user record(s) in
+      {{ users_db_file }} (changed={{ users_db_write.changed }})

@@ -1,0 +1,34 @@
+---
+# webapp_deploy: simulates deploying a web application by creating a
+# directory tree + rendering an nginx-style vhost config and a
+# systemd-unit-style service file from Jinja2 templates. Everything is
+# written under {{ sandbox_root }}, never under real /etc or /lib/systemd.
+
+- name: Ensure sandbox directory structure exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ sandbox_root }}"
+    - "{{ sandbox_root }}/etc/nginx/sites-available"
+    - "{{ sandbox_root }}/etc/systemd/system"
+    - "{{ sandbox_root }}/var/www/{{ webapp_name }}"
+
+- name: Render nginx-style site config from template
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: "{{ sandbox_root }}/etc/nginx/sites-available/{{ webapp_name }}.conf"
+    mode: "0644"
+
+- name: Render systemd-unit-style service file from template
+  ansible.builtin.template:
+    src: webapp.service.j2
+    dest: "{{ sandbox_root }}/etc/systemd/system/{{ webapp_name }}.service"
+    mode: "0644"
+
+- name: Drop a marker file describing the deployed release (idempotent, state:present)
+  ansible.builtin.copy:
+    content: "{{ webapp_name }} release {{ webapp_version }}\n"
+    dest: "{{ sandbox_root }}/var/www/{{ webapp_name }}/RELEASE"
+    mode: "0644"
